@@ -88,9 +88,23 @@ guide and do... such that it works every time you start a terminal.
 
 Trying some very basic stuff, just to get acquainted.
 - Get a list of all nodes
+
+
 - Get a list of all namespaces
 - Get cluster information of the currenct context cluster (you are already at it
   ;), the point being that you can change it will at a later date.)
+
+```bash	
+# Get a list of all nodes
+kubectl get nodes
+
+# Get a list of all namespaces
+kubectl get namespaces
+
+# Get cluster information of the current context cluster
+kubectl cluster-info
+
+```
 
 # Training exercise 3 - Your first app in cluster
 
@@ -104,7 +118,7 @@ need to know at this point.
 The image you are to use is _nginxdemos/hello_ at docker hub. Url: https://hub.docker.com/r/nginxdemos/hello/
 
 To do this from the CLI you need to use 
-> kubectl create deployment ...
+> kubectl create deployment hello-world --image=nginxdemos/hello --port=80
 
 the detailed options are not shown, but for you to figure out. Do note that its
 a _Deployment_, which is created!  Things you need to determine and thus how to
@@ -115,6 +129,9 @@ specify on the commandline:
 
 Try the help from the commandline! The _cheatsheet_ mentioned earlier is also a
 good place to look...
+
+>``kubectl get deployments`` to see the deployment
+
 
 ## Verification
 
@@ -130,14 +147,17 @@ find the following places:
 - Image used
 - Number of replicas - What do you reckon it should be as this point?!
 
+> ``kubectl get deployment hello-world -o yaml`` to see the deployment configuration
+
 Finally _port-forward_ a local port to the deployment. The cli command is 
-> kubectl port-forward ...
+> ``kubectl port-forward deployment/hello-world local_port:container_port``
+
 figure out the missing options...
 
 ## Removal
 
 Delete the deployment using the CLI and verify that its actually deleted.
-
+kubectl delete deployment hello-world
 
 # Training exercise 4 - Getting started with OpenLens 
 
@@ -146,8 +166,10 @@ Having completed this exercise you will have GUI to access and inspect your clus
 ## Installation 
 
 Following the simple guidelines found here
-https://gitlab.au.dk/swwao/course/-/wikis/tools - This includes installing the
+https://github.com/MuhammedKalkan/OpenLens/releases - This includes installing the
 plugin.
+When you have done this, do install the extension plugin that allows you to see log and more.
+Follow the guide here: https://gitlab.au.dk/swwao/openlens-extensions/openlens-node-pod-menu
 
 ## Inspecting the cluster
 
@@ -158,6 +180,8 @@ At this point the cluster only has 3 deployments, none of which are yours and
 thus none you have any knowledge about, so in effect quite empty.
 
 Lets install the _Deployment_ used in the prior exercise using the commandline.
+
+``kubectl create deployment hello-world --image=nginxdemos/hello --port=80``
 
 ### Port forwarding
 
@@ -173,16 +197,23 @@ Figuring out what's happeing in a pod is obviously very important. This can be
 done on the commandline as well as using this GUI.
 
 Try both :-)
-
+> in CMD ``kubectl logs <pod_name>`` 
+> in GUI go inisde the pod inside the GUI then on the right corner click on pod logs
 
 ### Entering the pods
 
 Finally, some times entering a running pod to inspect it is just as
 important. Again, try doing this both from the commandline as well as the GUI.
 
+``kubectl exec -it hello-world-86c7578cb-gnth7 -- sh``
 
 
 ## Cleanup
 
 Find the section handling port forwardings and remove the newly created and
 finally removed the deployment using the GUI.
+
+
+## issues 
+- the cluster fetches from the wrong api ``kubectl get nodes`` returns error
+> fix : code C:\Users\hadev\.kube\config and change the api to the localhost
